@@ -240,9 +240,7 @@ const ImageSlider = () => {
         <Grid container spacing={3} justify="center" alignItems="center" className={classes.aboutContent}>
           <Grid item xs={12} sm={6}>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vitae sem eu mi consequat euismod.
-              Maecenas et justo nec nisl convallis vehicula. Suspendisse potenti. Proin eget nunc nec lorem
-              convallis tincidunt.
+            Vivaaha is a streamlined platform for planning weddings, It connects couples with a wide range of wedding service providers including venues, mehndi artists, caterers, makeup artists, musicians, dancers, florists, and event organizers. It features separate interfaces for users and vendors, simplifying searches, bookings, and communication. Excitingly, we've added a new dimension – "Advertise with Vivaaha," allowing businesses to showcase products.  Vivaaha's goal is to ease the wedding planning process with efficiency and a touch of tradition
             </p>
           </Grid>
           <Grid item xs={12} sm={6}>
