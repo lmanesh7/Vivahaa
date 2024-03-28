@@ -1,0 +1,38 @@
+/* .header-row {
+  height: inherit;
+}
+
+.header-nav {
+  color: white;
+}
+
+.header-nav > .ant-menu-item {
+  font-size: 16px;
+  font-weight: 400;
+} */
+
+.logo-text {
+  font-family: Gilroy-Bold;
+  font-size: 28px;
+  font-weight: 700;
+  color: #4096ff;
+  text-decoration: none;
+}
+/* 
+#login-btn, #register-btn, #vendor-btn {
+  font-weight: 600;
+  display: block;
+  justify-self: flex-end;
+  font-size: .9rem;
+  float: right;
+  text-decoration: none;
+}
+
+#vendor-btn {
+  color: black;
+}
+
+.header-auth {
+  width: 100%;
+  height: 100%;
+} */

@@ -1,0 +1,82 @@
+/* .main-container {
+  line-height: 20px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.homepage-content {
+  flex-grow: 1;
+}
+
+.content-wrapper {
+  min-height: calc(100vh - 120px);
+  padding: 20px;
+}
+
+
+.text-bold {
+  font-weight: 700;
+}
+
+.main-head {
+  font-size: 16px;
+  display: block;
+  width: 100%;
+}
+
+.small {
+  font-size: 15px;
+}
+
+* {
+  font-family: Arial, sans-serif;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.bg-white {
+  background-color: #fff;
+} */
+
+/* Adjust the z-index to ensure the menu appears above other elements */
+.menu-container {
+  z-index: 1000; /* Adjust as needed */
+}
+
+/* Ensure the menu is positioned correctly */
+.menu {
+  position: absolute;
+  top: 50px; /* Adjust top position as needed */
+  left: 0;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+/* Ensure the menu items are visible */
+.menu-item {
+  display: block;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Highlight menu items on hover */
+.menu-item:hover {
+  background-color: #f0f0f0;
+}
+
+.image-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+}
+
+.image-gallery img {
+  width: 100%;  
+  height: auto;
+  object-fit: cover;
+}
