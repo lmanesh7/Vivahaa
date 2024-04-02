@@ -28,6 +28,8 @@ import EditPhoto from './components/vendor/forms/EditPhoto'
 import BookingPage from './components/vendor/BookingPage'
 import ReplyPage from './components/ReplyPage'
 import ImageSlider from './components/ImageSlider'
+import CheckListApp from './components/CheckListApp'
+import BudgetTracker from './components/BudgetTracker'
 
 function App() {
   const { isLogged } = useAuth()
@@ -66,7 +68,9 @@ function App() {
               <Routes>
                 <Route element={<PersistLogin />}>
                   <Route path="/" element={<ImageSlider />} />
+                  <Route path="/wedding-checklist" element={<CheckListApp />} />
                   <Route path="/home" element={<HomePage />} />
+                  <Route path="/budget-tracker" element={<BudgetTracker />} />
                   <Route path="/show/:serviceType" element={<HomePageDasher />} />
                   <Route path="/user" element={<Outlet />} >
                     <Route path="profile" element={<UserProfile />} />

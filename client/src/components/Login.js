@@ -36,6 +36,7 @@ export default function SignIn() {
 
       navigate(from, { replace: true })
       sessionStorage.setItem('loggedInUser',id);
+      sessionStorage.setItem('loggedInUsername',email);
       if(sessionStorage.getItem('currentPage')){
         window.location = sessionStorage.getItem('currentPage');
       }
