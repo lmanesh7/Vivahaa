@@ -29,6 +29,7 @@ import Decorator from './model/Decorator.js';
 import Photo from './model/Photo.js';
 import Booking from './model/Booking.js';
 import Task from './model/TaskSchema.js'
+import Budget from './model/Budget.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const twoStepsBackPath = dirname(fileURLToPath(new URL(".", import.meta.url)));
@@ -547,6 +548,53 @@ app.post('/api/photo/:id', async(req,res) => {
     res.status(500).json({ error: 'Failed to update photographer' })
   }
 })
+
+app.get('/api/budget/:id', async (req, res) => {
+  try {
+    const budget =  await Budget.findOne({user: req.params.id});
+    if (!budget) {
+      return res.status(404).json({ message: 'Budget data not found' });
+    }
+    res.json(budget);
+  } catch (error) {
+    console.error('Error fetching budget data:', error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+app.post('/api/budget', async (req, res) => {
+  try {
+    const { budget, totalCost, totalPaid, items, eventDate, user } = req.body;
+    const existingBudget = await Budget.findOne();
+    if (existingBudget) {
+      // Update existing budget data
+      existingBudget.budget = budget;
+      existingBudget.totalCost = totalCost;
+      existingBudget.totalPaid = totalPaid;
+      existingBudget.items = items;
+      existingBudget.eventDate = eventDate;
+      existingBudget.user = user;
+      await existingBudget.save();
+      res.sendStatus(200);
+    } else {
+      // Create new budget data
+      const newBudget = new Budget({
+        budget,
+        totalCost,
+        totalPaid,
+        items,
+        eventDate,
+        user
+      });
+      await newBudget.save();
+      res.sendStatus(201);
+    }
+  } catch (error) {
+    console.error('Error saving budget data:', error.message);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 app.all('*', (req, res) => {
   res.status(404);
 
@@ -558,6 +606,7 @@ app.all('*', (req, res) => {
     res.type('txt').send('404 Not found');
   }
 });
+
 
 app.use(errorHandler);
 
