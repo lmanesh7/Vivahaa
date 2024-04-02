@@ -10,6 +10,8 @@ import mehendiLogo from '../images/mehendiArtists.jpg';
 import decoratorLogo from '../images/decorators.jpg';
 import showImage1 from '../images/showImage1.jpg'
 import showImage2 from '../images/showImage2.jpg'
+import BudgetSynopsis from './BudgetSynopsis';
+import axios from '../api/axios';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -141,10 +143,32 @@ const ImageSlider = () => {
 
   const classes = useStyles();
   const [activeIndex, setActiveIndex] = useState(0);
+  const userLoggedIn = sessionStorage.getItem('loggedInUser');
+  const [budget, setBudget] = useState(0);
+  const [totalCost, setTotalCost] = useState(0);
+  const [totalPaid, setTotalPaid] = useState(0);
 
   // Function to move to the next slide
   const nextSlide = () => {
     setActiveIndex(prevIndex => (prevIndex + 1) % slides.length);
+  };
+  useEffect(() => {
+    if (userLoggedIn) {
+      fetchBudgetData();
+    }
+  }, [userLoggedIn]);
+  
+
+  const fetchBudgetData = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3500/api/budget/${userLoggedIn}`);
+      const { budget, totalCost, totalPaid, items, eventDate_ } = response.data;
+      setBudget(budget);
+      setTotalCost(totalCost);
+      setTotalPaid(totalPaid);
+    } catch (error) {
+      console.error('Error fetching budget data:', error);
+    }
   };
 
   useEffect(() => {
@@ -235,7 +259,14 @@ const ImageSlider = () => {
           Find All Vendors
         </Button>
       </div>
+         
       <div className={classes.aboutUs}>
+              
+      {sessionStorage.getItem('loggedInUser') &&(
+        <Grid item xs={12} sm={6}>
+        <BudgetSynopsis totalBudget={budget} totalCost={totalCost} totalPaid={totalPaid} />
+          </Grid>
+          )}
         <h2>About Us</h2>
         <Grid container spacing={3} justify="center" alignItems="center" className={classes.aboutContent}>
           <Grid item xs={12} sm={6}>
@@ -247,6 +278,10 @@ const ImageSlider = () => {
             <img src={aboutLogo} alt="About Us" className={classes.aboutImage} />
           </Grid>
         </Grid>
+        <Grid>
+       
+        </Grid>
+        
       </div>
     </>
   );
