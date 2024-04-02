@@ -28,7 +28,7 @@ import MehendiArtists from './model/MehendiArtists.js';
 import Decorator from './model/Decorator.js';
 import Photo from './model/Photo.js';
 import Booking from './model/Booking.js';
-;
+import Task from './model/TaskSchema.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const twoStepsBackPath = dirname(fileURLToPath(new URL(".", import.meta.url)));
@@ -511,6 +511,21 @@ app.post('/api/booking/:id/vendor-replies', async (req, res) => {
     res.status(500).json({ error: 'Failed to update vendor replies' });
   }
 });
+
+app.get('/tasks', async (req, res) => {
+  try {
+      let tasks;
+      if (req.query.category) {
+          tasks = await Task.find({ category: req.query.category });
+      } else {
+          tasks = await Task.find();
+      }
+      res.json(tasks);
+  } catch (error) {
+      res.status(500).json({ message: error.message });
+  }
+});
+
 
 app.post('/api/photo/:id', async(req,res) => {
   try {
