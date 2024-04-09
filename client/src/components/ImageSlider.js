@@ -13,6 +13,7 @@ import showImage2 from '../images/showImage2.jpg';
 import BudgetSynopsis from './BudgetSynopsis';
 import axios from '../api/axios';
 import EventDetailsPopup from './EventDetailsPopup';
+import { Edit } from '@material-ui/icons';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -184,9 +185,9 @@ const ImageSlider = () => {
 
   useEffect(() => {
     // Check if event details are stored in session storage
-    const eventDate = sessionStorage.getItem('eventDate');
-    const location = sessionStorage.getItem('location');
-    const estimatedGuests = sessionStorage.getItem('estimatedGuests');
+    const eventDate = localStorage.getItem('eventDate');
+    const location = localStorage.getItem('location');
+    const estimatedGuests = localStorage.getItem('estimatedGuests');
 
     if (!eventDate || !location || !estimatedGuests) {
       // If event details are not stored, show the popup
@@ -220,6 +221,12 @@ const ImageSlider = () => {
     } catch (error) {
       console.error('Error fetching checklist items:', error);
     }
+  };
+
+  const handleEditDetails = () => {
+    // Redirect to the page where users can edit event details
+    localStorage.clear();
+    window.location = './';
   };
 
   useEffect(() => {
@@ -275,6 +282,25 @@ const ImageSlider = () => {
   return (
     <> 
       <EventDetailsPopup open={showPopup} onClose={handlePopupClose} />
+      <Grid item xs={12} className={classes.eventDetails}>
+          
+              <Box display="flex" alignItems="center">
+                <Typography variant="body1" gutterBottom>
+                   Date: {localStorage.getItem('eventDate')}
+                </Typography>
+                <Button color="primary" startIcon={<Edit />} onClick={handleEditDetails}>
+                </Button>
+                <Typography variant="body1" gutterBottom>
+                  Location: {localStorage.getItem('location')}
+                </Typography>
+                <Button color="primary" startIcon={<Edit />} onClick={handleEditDetails}>
+                  
+                </Button>
+              </Box>
+              <Box display="flex" alignItems="center">
+          
+              </Box>
+            </Grid>
       <Paper elevation={3} className={classes.root}>
         <div className={classes.slider} style={{ transform: `translateX(-${activeIndex * 100}%)` }}>
           {slides.map((slide, index) => (

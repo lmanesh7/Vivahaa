@@ -56,7 +56,7 @@ const BudgetTracker = () => {
     paid: 0,
   });
   const [eventDate, setEventDate] = useState(
-    new Date(Date.now() + 3 * 30 * 24 * 60 * 60 * 1000)
+    new Date(localStorage.getItem('eventDate'))
   ); // Default event date is 3 months from now
 
   useEffect(() => {

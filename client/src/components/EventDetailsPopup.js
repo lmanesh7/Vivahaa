@@ -43,9 +43,9 @@ const EventDetailsPopup = ({ open, onClose }) => {
 
   const handleSubmit = () => {
     // Save event details to session storage
-    sessionStorage.setItem('eventDate', eventDate);
-    sessionStorage.setItem('location', location);
-    sessionStorage.setItem('estimatedGuests', estimatedGuests);
+    localStorage.setItem('eventDate', eventDate);
+    localStorage.setItem('location', location);
+    localStorage.setItem('estimatedGuests', estimatedGuests);
     onClose();
   };
 
