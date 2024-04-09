@@ -515,7 +515,7 @@ app.post('/api/booking/:id/vendor-replies', async (req, res) => {
 });
 app.post('/api/tasks', async (req, res) => {
   try {
-    const taskData = req.body;
+    const taskData = req.body.taskArray;
 
     // Check if taskData is an array
     // if (!Array.isArray(taskData)) {
@@ -542,6 +542,27 @@ app.post('/api/tasks', async (req, res) => {
   }
 });
 
+app.post('/api/savealltasks', async (req, res) => {
+  try {
+      const taskData = req.body.tasks; // Extract tasks array from the request body
+
+      for (const task of taskData) {
+          const isPresent = await TaskSchema.exists({ _id: task._id }); // Check if task exists by ID
+          if (!isPresent) {
+              const taskInstance = new TaskSchema(task);
+              await taskInstance.save();
+              console.log(`Task "${task.name}" saved successfully`);
+          } else {
+              console.log(`Task "${task.name}" already exists`);
+          }
+      }
+
+      return res.status(200).send('Tasks saved successfully');
+  } catch (error) {
+      console.error('Error saving tasks:', error);
+      return res.status(500).send('Internal Server Error');
+  }
+});
 
 
 
