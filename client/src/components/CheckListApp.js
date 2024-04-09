@@ -6,6 +6,7 @@ import TaskList from './TaskList';
 import ProgressBar from './ProgressBar';
 import axios from 'axios';
 import EditTask from './EditTask';
+import { enqueueSnackbar } from 'notistack';
 
 const App = () => {
     const [tasks, setTasks] = useState([
@@ -225,21 +226,42 @@ const App = () => {
         setProgress(progress);
     };
 
-    const handleTaskAdd = async (task) => {
-        debugger
-        const savedData = await axios.post(`http://localhost:3500/api/savetask/${userLoggedIn}`,task);
-        task = savedData.data;
-        const updatedTasks = tasks.map(category => {
-            if (category.category === task.category) {
-                return {
-                    ...category,
-                    tasks: [...category.tasks, task]
-                };
+    const handleTaskAdd = async (newTask) => {
+        try {
+            // Check if the task with the same ID already exists in the tasks array
+            const existingCategoryIndex = tasks.findIndex(category => category.category === newTask.category);
+            const existingTaskIndex = existingCategoryIndex !== -1
+                ? tasks[existingCategoryIndex].tasks.findIndex(task => task._id === newTask._id)
+                : -1;
+    
+            if (existingTaskIndex !== -1) {
+                // Task with the same ID already exists, update it
+                const updatedTasks = [...tasks];
+                updatedTasks[existingCategoryIndex].tasks[existingTaskIndex] = newTask;
+                setTasks(updatedTasks);
+            } else {
+                // Save the new task to the backend
+                const savedData = await axios.post(`http://localhost:3500/api/savetask/${userLoggedIn}`, newTask);
+                const savedTask = savedData.data;
+    
+                // Update the tasks state only if the task is successfully saved to the backend
+                setTasks(prevTasks => {
+                    return prevTasks.map(category => {
+                        if (category.category === savedTask.category) {
+                            return {
+                                ...category,
+                                tasks: [...category.tasks, savedTask]
+                            };
+                        }
+                        return category;
+                    });
+                });
             }
-            return category;
-        });
-        setTasks(updatedTasks);
+        } catch (error) {
+            console.error('Error adding/updating task:', error);
+        }
     };
+    
     
     
 
@@ -268,13 +290,43 @@ const App = () => {
               }));
             await axios.post('http://localhost:3500/api/tasks', { taskArray });
             console.log('Tasks saved successfully');
+            enqueueSnackbar("Progress saved successfully", {
+                variant: "success",
+                anchorOrigin: {
+                  vertical: "top",
+                  horizontal: "right",
+                },
+              });
         } catch (error) {
             console.error('Error saving tasks:', error);
+            enqueueSnackbar("Error while saving Progress", {
+                variant: "error",
+                anchorOrigin: {
+                  vertical: "top",
+                  horizontal: "right",
+                },
+              });
         }
     };
     const handleEditTaskClose = () => {
         setOpenEditTask(false);
         setEditedTask(null);
+    };
+    const handleTaskDelete = async (taskId) => {
+        // Filter out the task to be deleted
+        try{
+        await axios.delete(`http://localhost:3500/api/deletetask/${taskId}`)
+        const updatedTasks = tasks.map(category => ({
+            ...category,
+            tasks: category.tasks.filter(t => t._id !== taskId)
+        }));
+    
+        // Update the task list
+        setTasks(updatedTasks);
+    }
+    catch(error){
+        console.log(error)
+    }
     };
     
 
@@ -295,7 +347,8 @@ const App = () => {
             <TaskList 
     tasks={tasks} 
     onTaskCheck={handleTaskCheck} 
-    onTaskEdit={handleEditTask} // Ensure this prop name is correct
+    onTaskEdit={handleEditTask} 
+    onTaskDelete={handleTaskDelete}// Ensure this prop name is correct
 />
 
             <div>

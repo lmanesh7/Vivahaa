@@ -215,7 +215,7 @@ const ImageSlider = () => {
   const fetchChecklistItems = async () => {
     try {
       // Fetch checklist items from the server
-      const response = await axios.get(`http://localhost:3500/api/tasks/${userLoggedIn}`);
+      const response = await axios.get(`http://localhost:3500/api/tasksforhomepage/${userLoggedIn}`);
       debugger;
       setChecklistItems(response.data);
     } catch (error) {
