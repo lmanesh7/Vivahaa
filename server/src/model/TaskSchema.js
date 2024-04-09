@@ -11,6 +11,7 @@ const TaskSchema = new Schema({
         default: false,
     },
     category: String, // New field for category
+    user: { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
 export default mongoose.model("TaskList",TaskSchema);

@@ -30,6 +30,7 @@ import Photo from './model/Photo.js';
 import Booking from './model/Booking.js';
 import Task from './model/TaskSchema.js'
 import Budget from './model/Budget.js';
+import TaskSchema from './model/TaskSchema.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const twoStepsBackPath = dirname(fileURLToPath(new URL(".", import.meta.url)));
@@ -512,20 +513,121 @@ app.post('/api/booking/:id/vendor-replies', async (req, res) => {
     res.status(500).json({ error: 'Failed to update vendor replies' });
   }
 });
-
-app.get('/tasks', async (req, res) => {
+app.post('/api/tasks', async (req, res) => {
   try {
-      let tasks;
-      if (req.query.category) {
-          tasks = await Task.find({ category: req.query.category });
-      } else {
-          tasks = await Task.find();
+    const taskData = req.body;
+
+    // Check if taskData is an array
+    // if (!Array.isArray(taskData)) {
+    //   console.error('taskData is not an array:', taskData);
+    //   return res.status(400).json({ message: 'Invalid task data' });
+    // }
+
+    // Iterate over each category object in taskData
+    for (const categoryData of taskData) {
+      const category = categoryData.category;
+      const tasks = categoryData.tasks;
+
+      // Iterate over each task in the category
+      for (const task of tasks) {
+        // Update or insert each task
+        await Task.findOneAndUpdate({ _id: task._id }, task, { upsert: true, new: true });
       }
-      res.json(tasks);
+    }
+
+    res.json({ message: 'Tasks saved successfully' });
   } catch (error) {
-      res.status(500).json({ message: error.message });
+    console.error(error);
+    res.status(500).json({ message: 'Error saving tasks' });
   }
 });
+
+
+
+
+app.post('/api/savetask/:id', async (req,res) => {
+  try{
+    const task = {...req.body, user:req.params.id};
+    var isPresent = false;
+    var data = [];
+    if(task._id){
+     isPresent = await TaskSchema.findOne({_id:task._id});
+    }
+    if(isPresent){
+      await TaskSchema.findByIdAndUpdate(task);
+       data = await TaskSchema.findById(task._id);
+    }else{
+    await TaskSchema.create(task);
+     data = await TaskSchema.findOne({name:task.name})
+    }
+    return res.json(data)
+  }
+  catch(error){
+    return res.status(500).json({message:"Some error occured"});
+  }
+});
+
+// app.get('/api/tasks', async (req, res) => {
+// try{
+//   const tasks = await TaskSchema.find();
+//   return res.json(tasks);
+
+// }
+// catch(error){
+//   return res.status(500).json({message:"Some error occured"});
+// }
+// });
+app.put('/api/updatetask', async (req,res) => {
+  try{
+    const taskData = {...req.body};
+    const id = taskData._id;
+    //const task = await TaskSchema.findById(id);
+    await TaskSchema.findByIdAndUpdate(taskData);
+    const data = await TaskSchema.findById(id);
+    return res.json(data);
+  
+  }
+  catch(error){
+    return res.status(500).json({message:"Some error occured"});
+  }
+  });
+  app.get('/api/tasks/:id', async (req, res) => {
+    try {
+      let tasks;
+      if (req.query.category) {
+        tasks = await Task.find({ category: req.query.category });
+      } else {
+        tasks = await Task.find({user:req.params.id});
+      }
+      
+      // Group tasks by category
+      const tasksByCategory = tasks.reduce((acc, task) => {
+        if (!acc[task.category]) {
+          acc[task.category] = [];
+        }
+        acc[task.category].push({
+          _id: task._id,
+          name: task.name,
+          description: task.description,
+          dueDate: task.dueDate,
+          category: task.category,
+          completed: task.completed
+        });
+        return acc;
+      }, {});
+  
+      // Convert object to array format
+      const formattedTasks = Object.entries(tasksByCategory).map(([category, tasks]) => ({
+        category,
+        tasks
+      }));
+  
+      res.json(formattedTasks);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
 
 
 app.post('/api/photo/:id', async(req,res) => {
