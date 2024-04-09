@@ -1,9 +1,8 @@
-// TaskList.js
 import React, { useState } from 'react';
-import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography, List, ListItem, ListItemText, Checkbox, makeStyles } from '@material-ui/core';
-import { ExpandMore } from '@material-ui/icons';
+import { ExpansionPanel, ExpansionPanelSummary, ExpansionPanelDetails, Typography, List, ListItem, ListItemText, Checkbox, makeStyles, IconButton } from '@material-ui/core';
+import { ExpandMore, Edit, Delete } from '@material-ui/icons';
 
-const TaskList = ({ tasks, onTaskCheck }) => {
+const TaskList = ({ tasks, onTaskCheck, onTaskEdit, onTaskDelete }) => {
     const [expandedCategory, setExpandedCategory] = useState(null);
     const useStyles = makeStyles((theme) => ({
         completed: {
@@ -21,6 +20,14 @@ const TaskList = ({ tasks, onTaskCheck }) => {
         onTaskCheck(taskId);
     };
 
+    const handleTaskEdit = (taskId) => {
+        onTaskEdit(taskId);
+    };
+
+    const handleTaskDelete = (taskId) => {
+        onTaskDelete(taskId);
+    };
+
     return (
         <div>
             {tasks.map((categoryTasks, index) => (
@@ -33,9 +40,11 @@ const TaskList = ({ tasks, onTaskCheck }) => {
                     <ExpansionPanelDetails>
                         <List>
                             {categoryTasks.tasks.map((task, taskIndex) => (
-                                <ListItem key={taskIndex} button onClick={() => handleTaskCheckboxToggle(task._id)}>
+                                <ListItem key={taskIndex}>
                                     <Checkbox checked={task.completed} onChange={() => handleTaskCheckboxToggle(task._id)} />
-                                    <ListItemText primary={task.name} secondary={`Due Date: ${task.dueDate}`} className={task.completed ? classes.completed : ''} />
+                                    <ListItemText primary={task.description} secondary={`Due Date: ${task.dueDate}`} className={task.completed ? classes.completed : ''} />
+                                    <IconButton onClick={() => handleTaskEdit(task)}><Edit /></IconButton>
+                                    <IconButton onClick={() => handleTaskDelete(task._id)}><Delete /></IconButton>
                                 </ListItem>
                             ))}
                         </List>

@@ -12,6 +12,13 @@ const TaskForm = ({ categories, onTaskAdd }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        debugger;
+        const selectedDate = new Date(dueDate);
+        const timezoneOffset = selectedDate.getTimezoneOffset();
+        const adjustedDate = new Date(
+          selectedDate.getTime() - timezoneOffset * 60 * 1000
+        );
+        setDueDate(adjustedDate)
         const task = { name, description, dueDate, category };
         onTaskAdd(task);
         setName('');
@@ -27,6 +34,7 @@ const TaskForm = ({ categories, onTaskAdd }) => {
                 variant="contained"
                 color="primary"
                 startIcon={<Add />}
+                style={{ backgroundColor: 'black', color: 'white' }} 
                 onClick={() => setExpanded(!expanded)}
             >
                 Add Task
@@ -44,7 +52,7 @@ const TaskForm = ({ categories, onTaskAdd }) => {
                             ))}
                         </Select>
                     </FormControl>
-                    <Button variant="contained" color="primary" type="submit" fullWidth>Add Task</Button>
+                    <Button variant="contained" style={{ backgroundColor: 'black', color: 'white' }}  type="submit" fullWidth>Add Task</Button>
                 </form>
             </Collapse>
         </div>

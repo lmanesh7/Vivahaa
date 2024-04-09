@@ -8,10 +8,11 @@ import diyLogo from '../images/diy-assistance.jpg';
 import aboutLogo from '../images/Vivahaa_backgroundImage.jpg';
 import mehendiLogo from '../images/mehendiArtists.jpg';
 import decoratorLogo from '../images/decorators.jpg';
-import showImage1 from '../images/showImage1.jpg'
-import showImage2 from '../images/showImage2.jpg'
+import showImage1 from '../images/showImage1.jpg';
+import showImage2 from '../images/showImage2.jpg';
 import BudgetSynopsis from './BudgetSynopsis';
 import axios from '../api/axios';
+import EventDetailsPopup from './EventDetailsPopup';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -93,6 +94,25 @@ const useStyles = makeStyles(theme => ({
     height: 'auto',
     borderRadius: theme.shape.borderRadius,
   },
+  checklistGrid: {
+    marginTop: theme.spacing(4),
+    padding: theme.spacing(2),
+    backgroundColor: '#f5f5f5',
+    borderRadius: theme.spacing(2),
+  },
+  checklistItem: {
+    backgroundColor: '#fff',
+    padding: theme.spacing(2),
+    borderRadius: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+    cursor: 'pointer',
+    '&:hover': {
+      backgroundColor: '#f0f0f0',
+    },
+  },
+  categoryIcon: {
+    marginRight: theme.spacing(1),
+  },
 }));
 
 const ImageSlider = () => {
@@ -147,17 +167,37 @@ const ImageSlider = () => {
   const [budget, setBudget] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
   const [totalPaid, setTotalPaid] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
+  const [checklistItems, setChecklistItems] = useState([]);
 
   // Function to move to the next slide
   const nextSlide = () => {
     setActiveIndex(prevIndex => (prevIndex + 1) % slides.length);
   };
+
   useEffect(() => {
     if (userLoggedIn) {
       fetchBudgetData();
+      fetchChecklistItems();
     }
   }, [userLoggedIn]);
-  
+
+  useEffect(() => {
+    // Check if event details are stored in session storage
+    const eventDate = sessionStorage.getItem('eventDate');
+    const location = sessionStorage.getItem('location');
+    const estimatedGuests = sessionStorage.getItem('estimatedGuests');
+
+    if (!eventDate || !location || !estimatedGuests) {
+      // If event details are not stored, show the popup
+      setShowPopup(true);
+    }
+  }, []);
+
+  const handlePopupClose = () => {
+    // Close the popup
+    setShowPopup(false);
+  };
 
   const fetchBudgetData = async () => {
     try {
@@ -168,6 +208,17 @@ const ImageSlider = () => {
       setTotalPaid(totalPaid);
     } catch (error) {
       console.error('Error fetching budget data:', error);
+    }
+  };
+
+  const fetchChecklistItems = async () => {
+    try {
+      // Fetch checklist items from the server
+      const response = await axios.get(`http://localhost:3500/api/tasks/${userLoggedIn}`);
+      debugger;
+      setChecklistItems(response.data);
+    } catch (error) {
+      console.error('Error fetching checklist items:', error);
     }
   };
 
@@ -182,10 +233,15 @@ const ImageSlider = () => {
   const handleDotClick = index => {
     setActiveIndex(index);
   };
+
   const handleFindVendors = () => {
     // Perform navigation or other action for finding vendors
     console.log('Find All Vendors clicked');
     window.location = './home';
+  };
+  const handleChecklistClick = () => {
+    // Redirect to the checklist page
+    window.location = './wedding-checklist';
   };
 
   // Function to handle button click for each slide
@@ -217,7 +273,8 @@ const ImageSlider = () => {
   };
 
   return (
-    <>
+    <> 
+      <EventDetailsPopup open={showPopup} onClose={handlePopupClose} />
       <Paper elevation={3} className={classes.root}>
         <div className={classes.slider} style={{ transform: `translateX(-${activeIndex * 100}%)` }}>
           {slides.map((slide, index) => (
@@ -261,27 +318,42 @@ const ImageSlider = () => {
       </div>
          
       <div className={classes.aboutUs}>
-              
-      {sessionStorage.getItem('loggedInUser') &&(
-        <Grid item xs={12} sm={6}>
-        <BudgetSynopsis totalBudget={budget} totalCost={totalCost} totalPaid={totalPaid} />
+        {sessionStorage.getItem('loggedInUser') && (
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <BudgetSynopsis totalBudget={budget} totalCost={totalCost} totalPaid={totalPaid} />
+            </Grid>
+            <Grid item xs={12} sm={6} className={classes.checklistGrid} onClick={handleChecklistClick}>
+  <Typography variant="h6" gutterBottom>
+    Next items on your checklist  
+  </Typography>
+  {checklistItems.map((item, index) => (
+    <div key={index}>
+      <Typography variant="subtitle1" gutterBottom>
+        {item.category}
+      </Typography>
+      {item.tasks.map((task, taskIndex) => (
+        <Paper key={task._id} className={classes.checklistItem}>
+          <Typography variant="body1">{task.description}</Typography>
+        </Paper>
+      ))}
+    </div>
+  ))}
+</Grid>
+
           </Grid>
-          )}
+        )}
         <h2>About Us</h2>
         <Grid container spacing={3} justify="center" alignItems="center" className={classes.aboutContent}>
           <Grid item xs={12} sm={6}>
             <p>
-            Vivaaha is a streamlined platform for planning weddings, It connects couples with a wide range of wedding service providers including venues, mehndi artists, caterers, makeup artists, musicians, dancers, florists, and event organizers. It features separate interfaces for users and vendors, simplifying searches, bookings, and communication. Excitingly, we've added a new dimension – "Advertise with Vivaaha," allowing businesses to showcase products.  Vivaaha's goal is to ease the wedding planning process with efficiency and a touch of tradition
+              Vivaaha is a streamlined platform for planning weddings, It connects couples with a wide range of wedding service providers including venues, mehndi artists, caterers, makeup artists, musicians, dancers, florists, and event organizers. It features separate interfaces for users and vendors, simplifying searches, bookings, and communication. Excitingly, we've added a new dimension – "Advertise with Vivaaha," allowing businesses to showcase products. Vivaaha's goal is to ease the wedding planning process with efficiency and a touch of tradition
             </p>
           </Grid>
           <Grid item xs={12} sm={6}>
             <img src={aboutLogo} alt="About Us" className={classes.aboutImage} />
           </Grid>
         </Grid>
-        <Grid>
-       
-        </Grid>
-        
       </div>
     </>
   );
