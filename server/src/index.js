@@ -649,6 +649,55 @@ app.put('/api/updatetask', async (req,res) => {
     }
   });
   
+  app.get('/api/tasksforhomepage/:id', async (req, res) => {
+    try {
+      let tasks;
+      if (req.query.category) {
+        tasks = await Task.find({ category: req.query.category, completed: false });
+      } else {
+        tasks = await Task.find({ user: req.params.id, completed: false });
+      }
+      
+      // Group uncompleted tasks by category
+      const tasksByCategory = tasks.reduce((acc, task) => {
+        if (!acc[task.category]) {
+          acc[task.category] = [];
+        }
+        // Check if the category already has an uncompleted task
+        if (acc[task.category].length === 0) {
+          acc[task.category].push({
+            _id: task._id,
+            name: task.name,
+            description: task.description,
+            dueDate: task.dueDate,
+            category: task.category,
+            completed: task.completed
+          });
+        }
+        return acc;
+      }, {});
+  
+      // Convert object to array format
+      const formattedTasks = Object.entries(tasksByCategory).map(([category, tasks]) => ({
+        category,
+        tasks
+      }));
+  
+      res.json(formattedTasks);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.delete('/api/deletetask/:id', async(req, res) => {
+    try{
+    const taskId = req.params.id
+    await TaskSchema.findByIdAndDelete(taskId);
+  return res.json(201);}
+    catch(error){
+      return res.status(500)
+    }
+  })
 
 
 app.post('/api/photo/:id', async(req,res) => {
