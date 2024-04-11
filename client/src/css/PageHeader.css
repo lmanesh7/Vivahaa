@@ -10,14 +10,25 @@
   font-size: 16px;
   font-weight: 400;
 } */
-
 .logo-text {
-  font-family: Gilroy-Bold;
-  font-size: 28px;
+  font-family: 'Gilroy-Bold', sans-serif;
+  font-size: 48px;
   font-weight: 700;
-  color: #4096ff;
+  color: #ff4040;
   text-decoration: none;
+  background-image: linear-gradient(to right, #ff4040, #ff8c40);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  transition: transform 0.3s ease-in-out;
+  display: inline-block;
 }
+
+.logo-text:hover {
+  transform: rotateY(360deg);
+}
+
+
 /* 
 #login-btn, #register-btn, #vendor-btn {
   font-weight: 600;
