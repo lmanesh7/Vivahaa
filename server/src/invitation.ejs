@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation</title>
+    <style>
+        /* Customize your invitation styles here */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .invitation-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            text-align: center;
+        }
+        h1 {
+            color: #333333;
+        }
+        .message {
+            margin-top: 20px;
+            color: #666666;
+            font-size: 18px;
+        }
+        .footer {
+            margin-top: 30px;
+            color: #999999;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="invitation-container">
+        <h1>Dear <%= guest %>,</h1>
+        <p class="message"><%= commonMessage %></p>
+        <p class="message">We would be honored to have you join us as we celebrate our wedding.</p>
+        <p class="message">Date: <strong><%= weddingDate %></strong></p>
+        <p class="message">Venue: <strong>Your Wedding Venue</strong></p>
+        <p class="message">Looking forward to seeing you!</p>
+        <p class="footer">Email sent using<br>Vivahaa's planning tool</p>
+    </div>
+</body>
+</html>
