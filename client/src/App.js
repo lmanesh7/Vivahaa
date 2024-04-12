@@ -32,6 +32,7 @@ import CheckListApp from './components/CheckListApp'
 import BudgetTracker from './components/BudgetTracker'
 import Blog from './components/Blog'
 import HinduWeddingCustoms from './components/HinduWeddingCustoms'
+import GuestList from './components/GuestList'
 
 function App() {
   const { isLogged } = useAuth()
@@ -73,6 +74,7 @@ function App() {
                   <Route path="/wedding-checklist" element={<CheckListApp />} />
                   <Route path="/home" element={<HomePage />} />
                   <Route path="/blog" element={<Blog />} />
+                  <Route path="/guest-list" element={<GuestList />} />
                   <Route path="/hindu-wedding-traditions" element={<HinduWeddingCustoms />} />
                   <Route path="/budget-tracker" element={<BudgetTracker />} />
                   <Route path="/show/:serviceType" element={<HomePageDasher />} />

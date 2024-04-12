@@ -7,11 +7,16 @@ import '../css/PageHeader.css';
 
 const menuItems = [
   { key: 'ideasandadvice', label: 'Ideas and Advice', href: '#' },
+  {key: 'planningtools', label: 'Planning Tools', href:'#'},
   { key: 'venues', label: 'Venues', href: '#' },
   { key: 'vendors', label: 'Vendors', href: '#' },
 ];
 
 const subMenuItems = {
+  planningtools: [{
+    label:'Guest List', href:'/guest-list',
+   
+  }],
   ideasandadvice: [
     { label: 'Wedding Traditions', subItems: [
       { label: 'Hindu Wedding Traditions', href: '/hindu-wedding-traditions' },
