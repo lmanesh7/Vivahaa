@@ -14,13 +14,24 @@ import {
 } from '@mui/material';
 import { Delete as DeleteIcon } from '@mui/icons-material';
 import axios from '../api/axios';
+import VenuesService from '../services/Venues';
+import Autocomplete from '@mui/material/Autocomplete';
+import { enqueueSnackbar } from 'notistack';
 
 const GuestList = () => {
   const [guests, setGuests] = useState([]);
+  const [guestList, setGuestList] = useState([]);
   const [newGuestName, setNewGuestName] = useState('');
   const [newGuestEmail, setNewGuestEmail] = useState('');
   const [commonMessage, setCommonMessage] = useState('');
   const [weddingDate, setWeddingDate] = useState(localStorage.getItem('eventDate'));
+  const [eventDate, setEventDate] = useState('');
+  const [eventTime, setEventTime] = useState('');
+  const [venue, setVenue] = useState(null);
+  const [meetingLink, setMeetingLink] = useState('');
+  const [venues, setVenues] = useState([]);
+  const [venueId, setVenueId] = useState('');
+  const [inviterName, setInviterName] = useState('');
   const userId = sessionStorage.getItem('loggedInUser');
 
   // Fetch guest data when component mounts
@@ -28,16 +39,12 @@ const GuestList = () => {
     const fetchGuestData = async () => {
       try {
         const response = await fetch(`http://localhost:3500/api/guests/${userId}/${weddingDate}`);
-        debugger
         if (!response.ok) {
           throw new Error('Failed to fetch guest data');
         }
         const data = await response.json();
-        data.forEach(guest => {
-            setGuests(prevGuests => [...prevGuests, guest]);
-          });
-          setGuests(data)
-        //setCommonMessage(data.message);
+        setGuests(data);
+        setGuestList(data[0].guests);
       } catch (error) {
         console.error('Error fetching guest data:', error.message);
       }
@@ -46,17 +53,33 @@ const GuestList = () => {
     fetchGuestData();
   }, []); // Empty dependency array ensures the effect runs only once on mount
 
+  // Fetch venues when component mounts
+  useEffect(() => {
+    const fetchVenues = async () => {
+      try {
+        const response = await VenuesService.getAllVenues();
+        setVenues(response);
+      } catch (error) {
+        console.error('Error fetching venues:', error.message);
+      }
+    };
+
+    fetchVenues();
+  }, []);
+
   const addGuest = () => {
     if (newGuestName.trim() !== '' && newGuestEmail.trim() !== '') {
-      setGuests([...guests, { name: newGuestName, email: newGuestEmail }]);
+      const newGuest = { name: newGuestName, email: newGuestEmail };
+      setGuestList([...guestList, newGuest]);
+      setGuests([...guests, newGuest]);
       setNewGuestName('');
       setNewGuestEmail('');
     }
   };
 
   const deleteGuest = (index) => {
-    const updatedGuests = guests.filter((_, i) => i !== index);
-    setGuests(updatedGuests);
+    const updatedGuests = guestList.filter((_, i) => i !== index);
+    setGuestList(updatedGuests);
   };
 
   const handleSaveData = async () => {
@@ -67,9 +90,13 @@ const GuestList = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          guests: guests.map(({ name, email }) => ({ name, email })),
-          eventDate: weddingDate,
+          guests: guestList.map(({ name, email }) => ({ name, email })),
+          eventDate,
+          eventTime,
+          venueId,
+          meetingLink,
           message: commonMessage,
+          inviterName: inviterName,
           user: userId,
         }),
       });
@@ -78,21 +105,58 @@ const GuestList = () => {
         throw new Error('Failed to save guest data');
       }
 
-
       console.log('Guest data saved successfully');
+      enqueueSnackbar("Guests data saved successfully", {
+        variant: "success",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      });
     } catch (error) {
       console.error('Error saving guest data:', error.message);
+      enqueueSnackbar("Error saving guest data", {
+        variant: "error",
+        anchorOrigin: {
+          vertical: "top",
+          horizontal: "right",
+        },
+      });
     }
   };
 
   const handleSendEmail = async () => {
-    // Logic to send email to all recipients
+    try{
     await handleSaveData();
-    await axios.post('http://localhost:3500/api/sendemail')
+    await axios.post('http://localhost:3500/api/sendemail');
     console.log('Email sent to all recipients');
+    enqueueSnackbar("Email sent to all recipients", {
+      variant: "success",
+      anchorOrigin: {
+        vertical: "top",
+        horizontal: "right",
+      },
+    });
+  }
+  catch(error){
+    enqueueSnackbar("Error sending emails", {
+      variant: "error",
+      anchorOrigin: {
+        vertical: "top",
+        horizontal: "right",
+      },
+    });
+  }
   };
 
-  if(sessionStorage.getItem('role')!='5152'){
+  const handleVenueChange = (event, newValue) => {
+    debugger
+    setVenue(newValue);
+    setVenueId(newValue._id);
+  };
+  
+
+  if (sessionStorage.getItem('role') !== '5152') {
     return (
       <h1>You are not authorized to view this page. Please login as a user</h1>
     );
@@ -105,7 +169,7 @@ const GuestList = () => {
           Guest List
         </Typography>
         <Typography variant="body2" sx={{ position: 'absolute', top: 10, right: 10 }}>
-          Total Guests: {guests.length}
+          Total Guests: {guestList ? guestList.length : guests.length}
         </Typography>
         {weddingDate && (
           <Typography variant="body2" sx={{ mt: 1 }}>
@@ -139,7 +203,7 @@ const GuestList = () => {
           </Grid>
         </Grid>
         <List sx={{ mt: 3 }}>
-          {guests.map((guest, index) => (
+          {guestList.map((guest, index) => (
             <ListItem key={index} disablePadding>
               <ListItemText primary={guest.name} secondary={guest.email} />
               <ListItemSecondaryAction>
@@ -160,6 +224,51 @@ const GuestList = () => {
           onChange={(e) => setCommonMessage(e.target.value)}
           sx={{ mt: 3 }}
         />
+        <label>Event Details</label>
+        <TextField
+          fullWidth
+          label=""
+          type="date"
+          variant="outlined"
+          value={eventDate}
+          onChange={(e) => setEventDate(e.target.value)}
+          sx={{ mt: 3 }}
+        />
+        <TextField
+          fullWidth
+          label="Event Time"
+          type="time"
+          variant="outlined"
+          value={eventTime}
+          onChange={(e) => setEventTime(e.target.value)}
+          sx={{ mt: 3 }}
+        />
+        <Autocomplete
+          fullWidth
+          value={venue}
+          onChange={handleVenueChange}
+          options={venues}
+          required
+          getOptionLabel={(option) => option.businessName}
+          renderInput={(params) => <TextField {...params} label="Select Venue" variant="outlined" />}
+          sx={{ mt: 3 }}
+        />
+        <TextField
+          fullWidth
+          label="Meeting Link"
+          variant="outlined"
+          value={meetingLink}
+          onChange={(e) => setMeetingLink(e.target.value)}
+          sx={{ mt: 3 }}
+        />
+         <TextField
+              fullWidth
+              label="InviterName"
+              variant="outlined"
+              value={inviterName}
+              onChange={(e) => setInviterName(e.target.value)}
+              sx={{ mt: 3 }}
+            />
         <Grid container justifyContent="flex-end" sx={{ mt: 3 }}>
           <Grid item>
             <Button variant="outlined" onClick={handleSaveData}>
