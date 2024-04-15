@@ -7,44 +7,88 @@
     <style>
         /* Customize your invitation styles here */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f1e3; /* Light beige color */
             margin: 0;
             padding: 0;
         }
         .invitation-container {
             max-width: 600px;
             margin: 50px auto;
-            background-color: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             padding: 30px;
             text-align: center;
+            position: relative;
+        }
+        .invitation-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('background_invitation.avif');
+            background-size: cover;
+            background-position: center;
+            filter: brightness(0.5); /* Adjust the brightness to your preference */
+            border-radius: 20px;
         }
         h1 {
-            color: #333333;
+            color: #6d214f; /* Deep mauve color */
+            font-family: 'Brush Script MT', cursive;
+            font-size: 40px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
         }
         .message {
             margin-top: 20px;
-            color: #666666;
+            color: #333; /* Dark grey color */
             font-size: 18px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        .details {
+            margin-top: 30px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #6d214f; /* Deep mauve color */
+        }
+        .url {
+            margin-top: 20px;
+            color: #6d214f; /* Deep mauve color */
+            font-size: 16px;
+            font-weight: bold;
+            position: relative;
+            z-index: 1;
         }
         .footer {
             margin-top: 30px;
-            color: #999999;
+            color: #666; /* Medium grey color */
             font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="invitation-container">
-        <h1>Dear <%= guest %>,</h1>
+        <div class="invitation-background"></div>
+        <h1>Formal Invitation</h1>
+        <p class="message">Dear <%= guest %>,</p>
         <p class="message"><%= commonMessage %></p>
-        <p class="message">We would be honored to have you join us as we celebrate our wedding.</p>
-        <p class="message">Date: <strong><%= weddingDate %></strong></p>
-        <p class="message">Venue: <strong>Your Wedding Venue</strong></p>
-        <p class="message">Looking forward to seeing you!</p>
-        <p class="footer">Email sent using<br>Vivahaa's planning tool</p>
+        <p class="message">We are delighted to invite you to celebrate our wedding with us.</p>
+        <p class="message">Date: <span class="detail-label"><%= weddingDate %></span></p>
+        <p class="message">Time: <span class="detail-label"><%= weddingTime %></span></p>
+        <p class="message">Venue: <span class="detail-label"><%= venue %></span></p>
+        <p class="message">Address: <span class="detail-label"><%= address %></span></p>
+        <p class="message">We request the pleasure of your company on this joyous occasion.</p>
+        <p class="message">Kindly join us as we begin our new journey together.</p>
+        <p class="message">Watch the live event at:</p>
+        <p class="url"><%= meetingLink %></p>
+        <p class="footer">With warm regards,</p>
+        <p class="footer"><%=inviterName%></p>
     </div>
 </body>
 </html>

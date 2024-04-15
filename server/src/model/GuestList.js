@@ -8,7 +8,11 @@ const guestSchema = new Schema({
       email: { type: String, required: true }
     }],
     eventDate: { type: Date },
+    eventTime: {type: String},
+    venue: { type: mongoose.Schema.Types.ObjectId, ref: 'Venue' },
+    meetingLink: { type: String},
     message: { type: String },
+    inviterName: {type: String},
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   }, { timestamps: true });
 

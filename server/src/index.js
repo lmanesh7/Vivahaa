@@ -818,9 +818,10 @@ app.post("/api/budget", async (req, res) => {
 
 app.post("/api/guests", async (req, res) => {
   try {
-    const { guests, eventDate, message, user } = req.body;
+    const { guests, eventDate,eventTime, venueId,meetingLink, inviterName, message, user } = req.body;
+    const venue = venueId;
     await GuestList.deleteMany({ user: user });
-    const guest = new GuestList({ guests, eventDate, message, user });
+    const guest = new GuestList({ guests, eventDate,eventTime, venue,meetingLink,inviterName, message, user });
     await guest.save();
     res.status(201).json(guest);
   } catch (err) {
@@ -857,6 +858,7 @@ app.post("/api/sendemail", async (req, res) => {
     let guestList = await GuestList.find();
     guestList = guestList[0];
     const guests = guestList.guests;
+    const venue = await Venues.findById(guestList.venue);
 
     // Iterate through the guest list
     for (const guest of guests) {
@@ -866,6 +868,11 @@ app.post("/api/sendemail", async (req, res) => {
           guest: guest.name,
           commonMessage: guestList.message,
           weddingDate: guestList.eventDate,
+          weddingTime: guestList.eventTime,
+          venue: venue.businessName,
+          address: venue.address,
+          meetingLink: guestList.meetingLink,
+          inviterName: guestList.inviterName,
           rsvpDate: guestList.rsvpDate,
         });
 
