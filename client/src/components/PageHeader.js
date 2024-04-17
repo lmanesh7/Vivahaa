@@ -7,7 +7,7 @@ import '../css/PageHeader.css';
 
 const menuItems = [
   { key: 'ideasandadvice', label: 'Ideas and Advice', href: '#' },
-  {key: 'planningtools', label: 'Planning Tools', href:'#'},
+  { key: 'planningtools', label: 'Planning Tools', href:'#'},
   { key: 'venues', label: 'Venues', href: '#' },
   { key: 'vendors', label: 'Vendors', href: '#' },
 ];
@@ -82,13 +82,13 @@ const PageHeader = () => {
   
 
   return (
-    <AppBar position='fixed'>
+    <AppBar position='fixed' color='primary'> {/* Added color='primary' */}
       <Container maxWidth='lg'>
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Typography variant='h6' component='div'>
             <Link to='/' className='logo-text'>Vivahaa</Link>
           </Typography>
-          <Box sx={{ display: 'flex', gap: '20px' }}>
+          <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}> {/* Added alignItems: 'center' */}
             {menuItems.map((item) => (
               <div key={item.key} id={item.key}>
                 <Button
@@ -105,8 +105,8 @@ const PageHeader = () => {
               <UserProfileDropdown />
             ) : (
               <>
-                <Button color="primary" component={Link} to='/login'>Sign in</Button>
-                <Button color="primary" variant="contained" component={Link} to='/register'>Sign up</Button>
+                <Button color="inherit" component={Link} to='/login'>Sign in</Button> {/* Changed color to 'inherit' */}
+                <Button color="primary" variant="contained" component={Link} to='/register'>Sign up</Button> {/* Changed color to 'inherit' */}
               </>
             )}
           </Box>
