@@ -32,6 +32,7 @@ import Task from "./model/TaskSchema.js";
 import Budget from "./model/Budget.js";
 import TaskSchema from "./model/TaskSchema.js";
 import GuestList from "./model/GuestList.js";
+import Review from "./model/Review.js";
 import fs from "fs";
 import nodemailer from "nodemailer";
 import ejs from "ejs";
@@ -900,6 +901,48 @@ app.post("/api/sendemail", async (req, res) => {
     console.error("Error sending invitations:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
+});
+
+app.post('/api/saveReview', (req, res) => {
+  // Extract the review data from the request body
+  const { author, rating, comment, serviceId, user } = req.body;
+  
+  // Add your logic here to save the review to your database
+  // For demonstration purposes, let's assume you have a Review model
+  // and you're using Mongoose to interact with MongoDB
+ // Import your Review model
+  const newReview = new Review({
+    author: author,
+    rating: rating,
+    comment: comment,
+    serviceId: serviceId,
+    user: user
+  });
+  newReview.save()
+    .then(savedReview => {
+      console.log("Review saved successfully:", savedReview);
+      res.status(201).json(savedReview); // Respond with the saved review
+    })
+    .catch(error => {
+      console.error("Error saving review:", error);
+      res.status(500).json({ error: "Internal server error" });
+    });
+});
+
+app.get('/api/getReviews', (req, res) => {
+  // Extract the venueId from the query parameters
+  const { serviceId } = req.query;
+
+// Import your Review model
+  Review.find({ serviceId: serviceId })
+    .then(reviews => {
+      console.log("Fetched reviews:", reviews);
+      res.status(200).json(reviews); // Respond with the fetched reviews
+    })
+    .catch(error => {
+      console.error("Error fetching reviews:", error);
+      res.status(500).json({ error: "Internal server error" });
+    });
 });
 
 app.all("*", (req, res) => {
