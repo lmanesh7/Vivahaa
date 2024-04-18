@@ -467,7 +467,7 @@ const VenueDetails = () => {
           )}
         </Grid>
       )}
-      {isUser && (
+      {sessionStorage.getItem("loggedInUser") &&isUser && (
         <Grid item xs={12}>
           <Typography variant="h6" gutterBottom>
             Write a Review
