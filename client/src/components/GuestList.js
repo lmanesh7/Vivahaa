@@ -32,6 +32,7 @@ const GuestList = () => {
   const [venues, setVenues] = useState([]);
   const [venueId, setVenueId] = useState('');
   const [inviterName, setInviterName] = useState('');
+  const [attachment, setAttachment] = useState('');
   const userId = sessionStorage.getItem('loggedInUser');
 
   // Fetch guest data when component mounts
@@ -42,6 +43,7 @@ const GuestList = () => {
         if (!response.ok) {
           throw new Error('Failed to fetch guest data');
         }
+        debugger
         const data = await response.json();
         setGuests(data);
         setGuestList(data[0].guests);
@@ -83,6 +85,7 @@ const GuestList = () => {
   };
 
   const handleSaveData = async () => {
+
     try {
       const response = await fetch('http://localhost:3500/api/guests', {
         method: 'POST',
@@ -98,6 +101,7 @@ const GuestList = () => {
           message: commonMessage,
           inviterName: inviterName,
           user: userId,
+          attachment: attachment.name
         }),
       });
 
@@ -269,18 +273,29 @@ const GuestList = () => {
               onChange={(e) => setInviterName(e.target.value)}
               sx={{ mt: 3 }}
             />
+
+        <input
+          type="file"
+          onChange={(e) => setAttachment(e.target.files[0])}
+          accept=".pdf,.doc,.docx,.jpg,.png"
+          sx={{ mt: 3 }}
+        />
+       
         <Grid container justifyContent="flex-end" sx={{ mt: 3 }}>
           <Grid item>
             <Button variant="outlined" onClick={handleSaveData}>
               Save Data
             </Button>
           </Grid>
+          {(guestList[0] && 
           <Grid item sx={{ ml: 2 }}>
             <Button variant="contained" color="primary" onClick={handleSendEmail}>
               Send Email
             </Button>
           </Grid>
+           )}
         </Grid>
+       
       </Paper>
     </Container>
   );
