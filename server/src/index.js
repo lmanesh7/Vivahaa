@@ -819,10 +819,10 @@ app.post("/api/budget", async (req, res) => {
 
 app.post("/api/guests", async (req, res) => {
   try {
-    const { guests, eventDate,eventTime, venueId,meetingLink, inviterName, message, user } = req.body;
+    const { guests, eventDate,eventTime, venueId,meetingLink, inviterName, message, user, attachment } = req.body;
     const venue = venueId;
     await GuestList.deleteMany({ user: user });
-    const guest = new GuestList({ guests, eventDate,eventTime, venue,meetingLink,inviterName, message, user });
+    const guest = new GuestList({ guests, eventDate,eventTime, venue,meetingLink,inviterName, message, user, attachment });
     await guest.save();
     res.status(201).json(guest);
   } catch (err) {
@@ -883,6 +883,10 @@ app.post("/api/sendemail", async (req, res) => {
           to: guest.email,
           subject: "Wedding Invitation",
           html: renderedHtml,
+          attachments: [{
+            filename: guestList.attachment,
+            path: `email_attachments/${guestList.attachment}`
+        }]
         });
 
         console.log("Invitation email sent to:", guest.email);

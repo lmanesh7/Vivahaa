@@ -14,6 +14,7 @@ const guestSchema = new Schema({
     message: { type: String },
     inviterName: {type: String},
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    attachment: {type: String},
   }, { timestamps: true });
 
   export default mongoose.model('GuestList', guestSchema);
