@@ -32,6 +32,9 @@ import CheckListApp from './components/CheckListApp'
 import BudgetTracker from './components/BudgetTracker'
 import Blog from './components/Blog'
 import HinduWeddingCustoms from './components/HinduWeddingCustoms'
+import IndianWeddingTraditions from './components/IndianWeddingTraditions'
+import IndianWeddingGuestAttire from './components/IndianWeddingGuestAttire'
+import IndianWeddingBridesmaid from './components/IndianWeddingBridesmaid'
 import GuestList from './components/GuestList'
 
 function App() {
@@ -76,6 +79,9 @@ function App() {
                   <Route path="/blog" element={<Blog />} />
                   <Route path="/guest-list" element={<GuestList />} />
                   <Route path="/hindu-wedding-traditions" element={<HinduWeddingCustoms />} />
+                  <Route path="/indian-wedding-traditions" element={<IndianWeddingTraditions />} />
+                  <Route path="/what-to-wear-indian-wedding" element={<IndianWeddingGuestAttire />} />
+                  <Route path="/what-to-expect-bridesman-indian-wedding" element={<IndianWeddingBridesmaid />} />
                   <Route path="/budget-tracker" element={<BudgetTracker />} />
                   <Route path="/show/:serviceType" element={<HomePageDasher />} />
                   <Route path="/user" element={<Outlet />} >

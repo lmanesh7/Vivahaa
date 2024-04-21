@@ -61,12 +61,12 @@ const ReplyPage = () => {
   return (
     <div>
       <Typography variant="h5" gutterBottom>
-         - Conversation
+         - Chat
       </Typography>
       <ReplyWrapper>
         {vendorReplies.map((reply, index) => (
           <MessageWrapper key={index}>
-            <Typography variant="subtitle1">You: {reply}</Typography>
+            <Typography variant="subtitle1">{sessionStorage.getItem('loggedInUsername')}: {reply}</Typography>
             <Divider />
           </MessageWrapper>
         ))}

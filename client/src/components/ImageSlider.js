@@ -339,7 +339,7 @@ const ImageSlider = () => {
           startIcon={<Storefront />}
           onClick={handleFindVendors}
         >
-          Find All Vendors
+         Get Started
         </Button>
       </div>
          

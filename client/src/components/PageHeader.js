@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
+import { makeStyles } from '@material-ui/core/styles'; // Import makeStyles
 import { AppBar, Toolbar, Typography, Button, MenuItem, Container, Box, Paper, Popper, Grow, ClickAwayListener, MenuList, colors } from '@mui/material';
 import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import UserProfileDropdown from './UserProfileDropdown';
+import { Grid } from '@mui/material';
 import '../css/PageHeader.css';
 
 const menuItems = [
@@ -14,7 +16,11 @@ const menuItems = [
 
 const subMenuItems = {
   planningtools: [{
-    label:'Guest List', href:'/guest-list',
+    label:'.', subItems: [
+      {label: 'Guest List', href: '/guest-list'},
+      {label: 'Check List', href: '/wedding-checklist'},
+      {label: 'Budget Tracker', href: '/budget-tracker'}
+    ],
    
   }],
   ideasandadvice: [
@@ -29,24 +35,59 @@ const subMenuItems = {
       { label: 'Table Decor', href: '/table-decor' }
     ] },
   ],
-  // Add links for other menu items as well if needed
 };
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  logo: {
+    flexGrow: 1,
+    textDecoration: 'none',
+    '&:hover': {
+      textDecoration: 'none',
+    },
+  },
+  menu: {
+    display: 'flex', // Display menu items horizontally
+    alignItems: 'center', // Center menu items vertically
+  },
+  menuItem: {
+    marginRight: theme.spacing(2),
+    position: 'relative', // Position menu items relatively
+  },
+  button: {
+    marginLeft: theme.spacing(2),
+  },
+  subMenu: {
+    position: 'absolute', // Position sub-menu
+    top: '100%', // Align sub-menu below menu item
+    left: 0,
+    zIndex: 1, // Ensure sub-menu appears above other content
+    minWidth: '200px', // Set minimum width of sub-menu
+    backgroundColor: theme.palette.background.paper, // Set background color
+    boxShadow: theme.shadows[1], // Apply a light shadow
+    borderRadius: theme.shape.borderRadius, // Apply border radius
+  },
+}));
 
 const PageHeader = () => {
   const { isLogged } = useAuth();
   const [openSubMenu, setOpenSubMenu] = useState(null);
   const closeTimer = useRef(null);
+  const classes = useStyles(); // Initialize useStyles
 
   const handleSubMenuOpen = (event, menuItem) => {
-    clearTimeout(closeTimer.current); // Clear any pending close operation
+    clearTimeout(closeTimer.current);
     setOpenSubMenu(menuItem);
   };
 
   const handleSubMenuClose = () => {
     closeTimer.current = setTimeout(() => {
       setOpenSubMenu(null);
-    }, 3000); // Delayed closing of submenu
+    }, 3000);
   };
+
   const renderSubMenu = (menuItem) => {
     const subItems = subMenuItems[menuItem];
     if (!subItems) return null;
@@ -54,20 +95,22 @@ const PageHeader = () => {
       <Popper open={openSubMenu === menuItem} anchorEl={document.getElementById(menuItem)} transition disablePortal>
         {({ TransitionProps }) => (
           <Grow {...TransitionProps}>
-            <Paper>
+            <Paper className={classes.subMenu}>
               <ClickAwayListener onClickAway={handleSubMenuClose}>
                 <MenuList autoFocusItem={openSubMenu === menuItem}>
                   {subItems.map((subItem, index) => (
                     <MenuItem key={index}>
                       <Typography variant="body2">{subItem.label}</Typography>
                       {subItem.subItems && (
-                        <MenuList>
+                        <Grid container direction="column">
                           {subItem.subItems.map((subSubItem, subIndex) => (
-                            <MenuItem key={subIndex} component={Link} to={subSubItem.href}>
-                              <Typography variant="body2">{subSubItem.label}</Typography>
-                            </MenuItem>
+                            <Grid item key={subIndex}>
+                              <MenuItem component={Link} to={subSubItem.href}>
+                                <Typography variant="body2">{subSubItem.label}</Typography>
+                              </MenuItem>
+                            </Grid>
                           ))}
-                        </MenuList>
+                        </Grid>
                       )}
                     </MenuItem>
                   ))}
@@ -79,40 +122,41 @@ const PageHeader = () => {
       </Popper>
     );
   };
-  
 
   return (
-    <AppBar position='fixed' color='primary'> {/* Added color='primary' */}
-      <Container maxWidth='lg'>
-        <Toolbar sx={{ justifyContent: 'space-between' }}>
-          <Typography variant='h6' component='div'>
-            <Link to='/' className='logo-text'>Vivahaa</Link>
-          </Typography>
-          <Box sx={{ display: 'flex', gap: '20px', alignItems: 'center' }}> {/* Added alignItems: 'center' */}
-            {menuItems.map((item) => (
-              <div key={item.key} id={item.key}>
-                <Button
-                  color="inherit"
-                  onMouseEnter={(e) => handleSubMenuOpen(e, item.key)}
-                  onMouseLeave={handleSubMenuClose}
-                >
-                  {item.label}
-                </Button>
-                {renderSubMenu(item.key)}
-              </div>
-            ))}
-            {isLogged ? (
-              <UserProfileDropdown />
-            ) : (
-              <>
-                <Button color="inherit" component={Link} to='/login'>Sign in</Button> {/* Changed color to 'inherit' */}
-                <Button color="primary" variant="contained" component={Link} to='/register'>Sign up</Button> {/* Changed color to 'inherit' */}
-              </>
-            )}
-          </Box>
-        </Toolbar>
-      </Container>
-    </AppBar>
+    <div className={classes.root}>
+      <AppBar position='fixed' color='primary'>
+        <Container maxWidth='lg'>
+          <Toolbar>
+            <Typography variant='h6' className={classes.logo}>
+              <Link to='/' className='logo-text'>Vivahaa</Link>
+            </Typography>
+            <Box className={classes.menu}>
+              {menuItems.map((item) => (
+                <div key={item.key} id={item.key} className={classes.menuItem}>
+                  <Button
+                    color="inherit"
+                    onMouseEnter={(e) => handleSubMenuOpen(e, item.key)}
+                    onMouseLeave={handleSubMenuClose}
+                  >
+                    {item.label}
+                  </Button>
+                  {renderSubMenu(item.key)}
+                </div>
+              ))}
+              {isLogged ? (
+                <UserProfileDropdown />
+              ) : (
+                <>
+                  <Button color="inherit" component={Link} to='/login' className={classes.button}>Sign in</Button>
+                  <Button color="inherit" variant="contained" component={Link} to='/register' className={classes.button}>Sign up</Button>
+                </>
+              )}
+            </Box>
+          </Toolbar>
+        </Container>
+      </AppBar>
+    </div>
   );
 };
 
