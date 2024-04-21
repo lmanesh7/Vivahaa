@@ -4,7 +4,7 @@ const IndianWeddingTraditions = () => {
     return (
         <div>
             <h1 style={{fontSize: '36px', fontWeight: 'bold'}}>All the Indian Wedding Traditions You Should Know About</h1>
-            <img src="https://media-api.xogrp.com/images/13feea2c-26ba-4281-aae3-f8a12295db6c~rs_768.h" alt="Indian wedding traditions" />
+            <img src="https://media-api.xogrp.com/images/f4570601-a1e6-4802-86fb-ad9e988066fe~rs_768.h" alt="Indian wedding traditions" />
             <h2 style={{fontSize: '24px', fontWeight: 'bold'}}>Attending an Indian wedding for the first time? Here's what to expect.</h2>
             {/* <image> */}
             <p>
@@ -60,7 +60,7 @@ const IndianWeddingTraditions = () => {
             </p>
             {/* <image> */}
             <h2 style={{fontSize: '24px', fontWeight: 'bold'}}>What to Wear to an Indian Wedding</h2>
-            <img src="https://media-api.xogrp.com/images/b295144b-aae2-4712-9568-6f4ae39e6afc~rs_768.h" alt="Indian wedding traditions" />
+            <img src="https://media-api.xogrp.com/images/73773556-3829-4a1e-9312-38286abfa490~rs_768.h" alt="Indian wedding traditions" />
             <p>
                 When it comes to Indian wedding guest attire and the ensembles you can expect to see the couple wearing, vibrant lehengas (or lenghas), saris and kurtas are commonplace. However, from region to region you can expect some differences. Notably, grooms at Bohri and Punjabi weddings may don a turban. Meanwhile, Maharashtrian brides will generally don a sari and beaded headband while other Indian brides often opt for lehengas. As for what guests can and should wear, let this in-depth manual be your guide.
             </p>
