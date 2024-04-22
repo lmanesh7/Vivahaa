@@ -10,8 +10,8 @@ import '../css/PageHeader.css';
 const menuItems = [
   { key: 'ideasandadvice', label: 'Ideas and Advice', href: '#' },
   { key: 'planningtools', label: 'Planning Tools', href:'#'},
-  { key: 'venues', label: 'Venues', href: '#' },
-  { key: 'vendors', label: 'Vendors', href: '#' },
+  { key: 'venues', label: 'Venues', to: '/show/venues' },
+  { key: 'vendors', label: 'Vendors', to: '/home' },
 ];
 
 const subMenuItems = {
@@ -134,13 +134,17 @@ const PageHeader = () => {
             <Box className={classes.menu}>
               {menuItems.map((item) => (
                 <div key={item.key} id={item.key} className={classes.menuItem}>
-                  <Button
-                    color="inherit"
-                    onMouseEnter={(e) => handleSubMenuOpen(e, item.key)}
-                    onMouseLeave={handleSubMenuClose}
-                  >
-                    {item.label}
-                  </Button>
+                  {(item.key !== 'planningtools' || sessionStorage.getItem('role')=='5152') && ( // Conditionally render "Planning Tools" label
+                    <Button
+                      color="inherit"
+                      onMouseEnter={(e) => handleSubMenuOpen(e, item.key)}
+                      onMouseLeave={handleSubMenuClose}
+                      component={Link}
+                      to={item.to} // Add this line
+                    >
+                      {item.label}
+                    </Button>
+                  )}
                   {renderSubMenu(item.key)}
                 </div>
               ))}
@@ -158,6 +162,7 @@ const PageHeader = () => {
       </AppBar>
     </div>
   );
+
 };
 
 export default PageHeader;
