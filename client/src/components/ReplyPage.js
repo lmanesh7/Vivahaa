@@ -66,7 +66,7 @@ const ReplyPage = () => {
       <ReplyWrapper>
         {vendorReplies.map((reply, index) => (
           <MessageWrapper key={index}>
-            <Typography variant="subtitle1">{sessionStorage.getItem('loggedInUsername')}: {reply}</Typography>
+            <Typography variant="subtitle1">You: {reply}</Typography>
             <Divider />
           </MessageWrapper>
         ))}
