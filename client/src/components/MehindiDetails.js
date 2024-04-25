@@ -418,7 +418,7 @@ const MehindiDetails = () => {
                 )}
             </Grid>)}
 
-            {sessionStorage.getItem("loggedInUser") && sessionStorage.getItem('role')!='5151' && (
+            {/* {sessionStorage.getItem("loggedInUser") && sessionStorage.getItem('role')!='5151' && (
         <Grid item xs={12}>
           <Typography variant="h6" gutterBottom>
             Write a Review
@@ -473,7 +473,7 @@ const MehindiDetails = () => {
             </Grid>
           </Grid>
         </Grid>
-      )}
+      )} */}
 
             <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md">
         <DialogContent>

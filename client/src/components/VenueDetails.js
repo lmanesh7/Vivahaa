@@ -498,7 +498,7 @@ const VenueDetails = () => {
           )}
         </Grid>
       )}
-      {sessionStorage.getItem("loggedInUser") &&isUser && (
+      {/* {sessionStorage.getItem("loggedInUser") &&isUser && (
         <Grid item xs={12}>
           <Typography variant="h6" gutterBottom>
             Write a Review
@@ -553,7 +553,7 @@ const VenueDetails = () => {
             </Grid>
           </Grid>
         </Grid>
-      )}
+      )} */}
       {/* Modal for displaying zoomed-in image */}
       <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md">
         <DialogContent>
