@@ -56,6 +56,9 @@ const VenueDetails = () => {
   const [openModal, setOpenModal] = useState(false);
   const [viewMore, setViewMore] = useState(false);
   const [openAllReviewsDialog, setOpenAllReviewsDialog] = useState(false);
+  const [cuisines, setCuisines] = useState([]);
+  const [facilities, setFacilities] = useState([]);
+
 
   const [userReview, setUserReview] = useState({
     author: sessionStorage.getItem("loggedInUsername"),
@@ -71,10 +74,11 @@ const VenueDetails = () => {
     }
     const fetchVenue = async () => {
       try {
-        
         const venueData = await axios.get(`/api/getVenueById?id=${venueId}`);
         setVenue(venueData.data);
         setImages(JSON.parse(venueData.data.workImages));
+        setCuisines(JSON.parse(venueData.data.cuisinesAvailable));
+        setFacilities(JSON.parse(venueData.data.facilitiesAvailable));
       } catch (error) {
         console.error("Error fetching venue details:", error);
       }
@@ -342,6 +346,33 @@ const VenueDetails = () => {
           <strong>Non-Veg Plate:</strong> {venue.pricePerPlateNonVeg}
         </Typography>
       </Grid>
+<Grid item xs={12} md={6}>
+  <Typography variant="h6" gutterBottom>
+    Facilities Available
+  </Typography>
+  <Typography variant="body2" color="text.secondary" gutterBottom>
+    {facilities.map((facility, index) => (
+      <span key={index}>
+        {facility}
+        {index !== facilities.length - 1 && ", "}
+      </span>
+    ))}
+  </Typography>
+</Grid>
+<Grid item xs={12} md={6}>
+  <Typography variant="h6" gutterBottom>
+    Cuisines Available
+  </Typography>
+  <Typography variant="body2" color="text.secondary" gutterBottom>
+    {cuisines.map((cuisine, index) => (
+      <span key={index}>
+        {cuisine}
+        {index !== cuisines.length - 1 && ", "}
+      </span>
+    ))}
+  </Typography>
+</Grid>
+
       <Grid item xs={12}>
         <Typography variant="h6" gutterBottom>
           Reviews

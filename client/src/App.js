@@ -30,6 +30,7 @@ import ReplyPage from './components/ReplyPage'
 import ImageSlider from './components/ImageSlider'
 import CheckListApp from './components/CheckListApp'
 import BudgetTracker from './components/BudgetTracker'
+import ReviewForm from './components/ReviewForm'
 import Blog from './components/Blog'
 import HinduWeddingCustoms from './components/HinduWeddingCustoms'
 import IndianWeddingTraditions from './components/IndianWeddingTraditions'
@@ -83,6 +84,7 @@ function App() {
                   <Route path="/what-to-wear-indian-wedding" element={<IndianWeddingGuestAttire />} />
                   <Route path="/what-to-expect-bridesman-indian-wedding" element={<IndianWeddingBridesmaid />} />
                   <Route path="/budget-tracker" element={<BudgetTracker />} />
+                  <Route path="/write-a-review/:id/:serviceId" element={<ReviewForm />} />
                   <Route path="/show/:serviceType" element={<HomePageDasher />} />
                   <Route path="/user" element={<Outlet />} >
                     <Route path="profile" element={<UserProfile />} />

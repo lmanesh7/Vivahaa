@@ -351,6 +351,89 @@ app.get("/api/user/bookings/:id", async (req, res) => {
   }
 });
 
+app.post("/api/completed/bookings/", async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const bookings = await Booking.find({ eventDate: { $lt: currentDate }}).sort({ createdAt: -1 });
+
+    // Loop through each notification ,
+    for (let i = 0; i < bookings.length; i++) {
+      let businessName = "";
+
+      // Determine the collection based on serviceType
+      switch (bookings[i].vendorType) {
+        case "decor":
+          const decorator = await Decorator.find({ _id: bookings[i].vendor });
+          businessName = decorator[0] ? decorator[0].businessName : "";
+          break;
+        case "venue":
+          const venue = await Venues.find({ _id: bookings[i].vendor });
+          businessName = venue[0] ? venue[0].businessName : "";
+          break;
+        case "mehendi":
+          const mehendi = await MehendiArtists.find({
+            _id: bookings[i].vendor,
+          });
+          businessName = mehendi[0] ? mehendi[0].businessName : "";
+          break;
+        case "photo":
+          const photo = await Photo.find({ _id: bookings[i].vendor });
+          businessName = photo[0] ? photo[0].businessName : "";
+          break;
+        default:
+          break;
+      }
+
+      if (businessName !== undefined && businessName !== "") {
+        // Add businessName to the bookings object
+        bookings[i] = {
+          ...bookings[i].toObject(),
+          businessName: businessName,
+        };
+      } else {
+        // Remove the booking if businessName is empty or undefined
+        bookings.splice(i, 1);
+        i--; // Decrement i to adjust for removed element
+      }
+    }
+
+    const htmlTemplate = fs.readFileSync("src/customerReview.ejs", "utf-8");
+
+    // Create a Nodemailer transporter
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "skytravels2024@gmail.com",
+        pass: "hfwi jofc gdlr pfrl",
+      },
+    });
+
+    //res.json(bookings);
+    for(const booking of bookings){
+ 
+    
+    const renderedHtml = ejs.render(htmlTemplate, {
+      fname: booking.fname,
+      lname: booking.lname,
+      businessName: booking.businessName,
+      user: booking.user,
+      service: booking.vendor
+    })
+    const info = await transporter.sendMail({
+      from: "Poojamma@gmail.com",
+      to: booking.email,
+      subject: "Feedback Request",
+      html: renderedHtml,
+    });
+
+  }
+  res.status(200).json({message:"Emails sent successfully"})
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+});
+
 app.get("/api/booking/:id", async (req, res) => {
   try {
     const id = req.params.id;
